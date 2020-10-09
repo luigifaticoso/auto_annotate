@@ -23,7 +23,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from object_detection.utils import generate_xml
+import generate_xml
 import os
 from object_detection.utils import shape_utils
 from object_detection.core import standard_fields as fields
@@ -732,6 +732,7 @@ def visualize_boxes_and_labels_on_image_array(
         classes,
         scores,
         category_index,
+        file_name,
         instance_masks=None,
         instance_boundaries=None,
         keypoints=None,
@@ -744,7 +745,8 @@ def visualize_boxes_and_labels_on_image_array(
         groundtruth_box_visualization_color='black',
         skip_scores=False,
         skip_labels=False,
-        skip_track_ids=False):
+        skip_track_ids=False,
+        ):
     """Overlay labeled boxes on an image with formatted scores and label names.
 
     This function groups boxes that correspond to the same location
@@ -894,7 +896,7 @@ def visualize_boxes_and_labels_on_image_array(
                 use_normalized_coordinates=use_normalized_coordinates)
     
     if new_xml != False:
-      xml = generate_xml.GenerateXml(array_position, im_width, im_height, class_name)
+      xml = generate_xml.GenerateXml(array_position, im_width, im_height, class_name,file_name)
       xml.gerenate_basic_structure()
 
     return image

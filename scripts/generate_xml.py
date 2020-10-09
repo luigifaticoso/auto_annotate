@@ -3,14 +3,15 @@ from random import randrange
 import os
 
 class GenerateXml(object):
-    def __init__(self, box_array, im_width, im_height, inferred_class):
+    def __init__(self, box_array, im_width, im_height, inferred_class,or_file_name):
         self.inferred_class = inferred_class
         self.box_array = box_array
         self.im_width = im_width
         self.im_height = im_height
+        self.or_file_name = or_file_name
 
     def get_file_name(self):
-        xml_path = 'your-local-path-here/xml'
+        xml_path = '/mnt/AI_VOLUME/ppe_detection/auto_annotate/xml'
         directory = os.path.basename(xml_path)
         file_list = os.listdir(directory)
 
@@ -20,7 +21,7 @@ class GenerateXml(object):
             return len(file_list) + 1
 
     def gerenate_basic_structure(self):
-        file_name = "image" + "_" + str(self.get_file_name())
+        file_name = self.or_file_name
         annotation = ET.Element("annotation")
         ET.SubElement(annotation, "filename").text = file_name + ".jpg"
         size = ET.SubElement(annotation, "size")
@@ -41,7 +42,8 @@ class GenerateXml(object):
             ET.SubElement(bndBox, "ymax").text = str(i['ymax'])
 
         arquivo = ET.ElementTree(annotation)
-        arquivo.write("your-local-path-here/xml/" + file_name + ".xml")
+        print("path:" + "/mnt/AI_VOLUME/ppe_detection/auto_annotate/xml/" + file_name + ".xml")
+        arquivo.write("/mnt/AI_VOLUME/ppe_detection/auto_annotate/xml/" + file_name + ".xml")
 
 def main():
     xml = GenerateXml([{'xmin': 0.5406094193458557, 'xmax': 0.6001364588737488, 'ymin': 0.6876631379127502, 'ymax': 0.7547240853309631}, {'xmin': 0.5406094193458557, 'xmax': 0.6001364588737488, 'ymin': 0.6876631379127502, 'ymax': 0.7547240853309631}, {'xmin': 0.5406094193458557, 'xmax': 0.6001364588737488, 'ymin': 0.6876631379127502, 'ymax': 0.7547240853309631}, {'xmin': 0.5406094193458557, 'xmax': 0.6001364588737488, 'ymin': 0.6876631379127502, 'ymax': 0.7547240853309631}], '4000', '2000', 'miner') # just for debuggind

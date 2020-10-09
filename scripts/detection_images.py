@@ -1,4 +1,4 @@
-from object_detection.utils import visualization_utils as vis_util
+import visualization_utils as vis_util
 from object_detection.utils import label_map_util
 from object_detection.utils import ops as utils_ops
 import numpy as np
@@ -8,6 +8,7 @@ import sys
 import tarfile
 import tensorflow as tf
 import zipfile
+import ntpath
 
 from collections import defaultdict
 from io import StringIO
@@ -20,7 +21,7 @@ import glob
 PATH_TO_CKPT = './graphs/frozen_inference_graph.pb'
 
 # List of the strings that is used to add correct label for each box.
-PATH_TO_LABELS = './graphs/label_map.pbtxt'
+PATH_TO_LABELS = './graphs/helmet_label_map.pbtxt'
 
 # Path to the images you want to infer
 PATH_TO_TEST_IMAGES_DIR = './images'
@@ -44,7 +45,7 @@ try:
 
     label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
     categories = label_map_util.convert_label_map_to_categories(
-        label_map, max_num_classes=2, use_display_name=True)
+        label_map, max_num_classes=1, use_display_name=True)
     category_index = label_map_util.create_category_index(categories)
 
     def load_image_into_numpy_array(image):
@@ -112,6 +113,8 @@ try:
 
     count = 1
     for image_path in TEST_IMAGE_PATHS:
+        print(image_path)
+        print()
         image = Image.open(image_path)
 
         im_width, im_height = image.size
@@ -136,15 +139,17 @@ try:
             output_dict['detection_classes'],
             output_dict['detection_scores'],
             category_index,
+            os.path.splitext(ntpath.basename(image_path))[0],
             instance_masks=output_dict.get('detection_masks'),
             use_normalized_coordinates=True,
-            line_thickness=10)
+            line_thickness=10,
+            )
 
         plt.figure(figsize=IMAGE_SIZE)
         plt.axis('off')
         plt.imshow(image_np)
 
-        plt.savefig('./results/image_' + str(count) + '.jpg', bbox_inches='tight')
+        plt.savefig('./results/'+ntpath.basename(image_path), bbox_inches='tight')
         count += 1
 
 except Exception as error:
